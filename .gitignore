@@ -1,0 +1,9 @@
+.aws/
+.terraform.d/
+*.tfstate
+*.tfstate.backup
+.terraform/
+*.log
+*.pyc
+__pycache__/
+lambda.zip
