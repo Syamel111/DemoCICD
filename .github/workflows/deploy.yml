@@ -17,12 +17,11 @@ jobs:
     steps:
       - name: 📥 Checkout Repo
         uses: actions/checkout@v3
-      
+ 
       - name: 🔧 Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.12.2
-
 
       - name: ☁️ Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
