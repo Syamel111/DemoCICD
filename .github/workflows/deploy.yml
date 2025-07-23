@@ -4,42 +4,55 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
 
 jobs:
-  terraform:
-    name: Terraform Plan & Apply
+  build-test-deploy:
+    name: Test & Deploy Infrastructure
     runs-on: ubuntu-latest
 
     env:
       AWS_REGION: ap-southeast-1
 
     steps:
-      - name: 📥 Checkout Repo
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v3
- 
-      - name: 🔧 Install Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.12.2
 
-      - name: ☁️ Configure AWS Credentials
+      - name: 🔧 Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: 📦 Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: 🧪 Run Pytest
+        run: pytest
+
+      - name: ☁️ Set Up AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: 🔧 Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
+
       - name: 🧱 Terraform Init
+        working-directory: ./infra
         run: terraform init
-        working-directory: ./infra
 
-      - name: 🔍 Terraform Plan
-        run: terraform plan -out=tfplan
+      - name: 📝 Terraform Plan
         working-directory: ./infra
+        run: terraform plan
 
-      - name: ✅ Terraform Apply (Manual Only)
-        if: github.event_name == 'workflow_dispatch'
-        run: terraform apply -auto-approve tfplan
+      - name: 🚀 Terraform Apply
+        if: github.ref == 'refs/heads/main'
         working-directory: ./infra
+        run: terraform apply -auto-approve
 
