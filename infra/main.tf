@@ -17,18 +17,18 @@ resource "aws_iam_role" "lambda_exec" {
 }
 
 resource "aws_lambda_function" "resume_api" {
-  function_name = "resume-api"
-  runtime       = "python3.9"
-  handler       = "lambda_function.handler"
-  filename      = "${path.module}/../lambda/lambda_function.zip"
-  role          = aws_iam_role.lambda_exec.arn
-  source_code_hash = filebase64sha256("${path.module}/../lambda/lambda_function.zip")
+  function_name    = "resume-api"
+  runtime          = "python3.9"
+  handler          = "lambda_function.handler"
+  filename         = "${path.module}/../app/lambda_function.zip"
+  role             = aws_iam_role.lambda_exec.arn
+  source_code_hash = filebase64sha256("${path.module}/../app/lambda_function.zip")
 
-environment {
-  variables = {
-    SECRETS_NAME = "api_key"
+  environment {
+    variables = {
+      SECRETS_NAME = "api_key"
+    }
   }
-}
 
 }
 
@@ -71,7 +71,7 @@ resource "aws_lambda_permission" "api_gw" {
 }
 
 resource "aws_api_gateway_deployment" "resume" {
-  depends_on = [aws_api_gateway_integration.lambda]
+  depends_on  = [aws_api_gateway_integration.lambda]
   rest_api_id = aws_api_gateway_rest_api.resume_api.id
 }
 
@@ -87,7 +87,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 }
 
 resource "aws_iam_policy" "secrets_access" {
-  name   = "lambda-secrets-access"
+  name = "lambda-secrets-access"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
