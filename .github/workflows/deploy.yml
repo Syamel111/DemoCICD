@@ -36,7 +36,7 @@ jobs:
       - name: 🧪 Run Pytest with Coverage
         run: |
           echo "Running tests with coverage..."
-          pytest --cov=app --cov=tests
+          pytest --cov=app --cov-fail-under=80
 
       - name: ☁️ Set Up AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
