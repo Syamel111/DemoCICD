@@ -3,8 +3,13 @@ import os
 import json
 from unittest.mock import patch, MagicMock
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app')))
-from lambda_function import handler
+sys.path.insert(
+    0,
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app'))
+)
+
+from lambda_function import handler  # noqa: E402
+
 
 @patch("boto3.client")
 def test_handler_returns_200(mock_boto_client, monkeypatch):
