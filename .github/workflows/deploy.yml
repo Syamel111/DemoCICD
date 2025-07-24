@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-test-deploy:
-    name: Test & Deploy Infrastructure
+    name: Lint, Test & Deploy Infrastructure
     runs-on: ubuntu-latest
 
     env:
@@ -28,8 +28,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
 
-      - name: 🧪 Run Pytest
-        run: pytest
+      - name: ✅ Lint with Flake8
+        run: |
+          echo "Running flake8..."
+          flake8 app tests
+
+      - name: 🧪 Run Pytest with Coverage
+        run: |
+          echo "Running tests with coverage..."
+          pytest --cov=app --cov=tests
 
       - name: ☁️ Set Up AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -43,11 +50,11 @@ jobs:
         with:
           terraform_version: 1.5.7
 
-      - name: 🧱 Terraform Init
+      - name: 🛠️ Terraform Init
         working-directory: ./infra
         run: terraform init
 
-      - name: 📝 Terraform Plan
+      - name: 📋 Terraform Plan
         working-directory: ./infra
         run: terraform plan
 
