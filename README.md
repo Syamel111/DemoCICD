@@ -67,5 +67,3 @@ Also remember to manually delete the **S3 bucket** and **DynamoDB table** if the
 💡 Prepared for next steps: Monitoring, Secrets Rotation, IAM least privilege enforcement
 
 ---
-
-```
