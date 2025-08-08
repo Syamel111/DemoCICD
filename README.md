@@ -1,4 +1,3 @@
-````markdown
 # 🛠️ Serverless Resume API with Terraform (Week 1 Project)
 
 This project showcases a production-ready **serverless resume API** built entirely with **Terraform**, using AWS Lambda, API Gateway, Secrets Manager, and GitHub Actions for CI/CD.
